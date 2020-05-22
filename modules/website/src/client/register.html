@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Evil Inc.</title>
+        <meta charset="utf8">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div id="header">
+            <a href="/" class="headerbutton">
+                <span>Home</span>
+            </a>
+            <a href="/about" class="headerbutton">
+                <span>About Us</span>
+            </a>
+            <a href="/blog"  class="headerbutton">
+                <span>Blog</span>
+            </a>
+            <!--
+            <a href="/admin" class="headerbutton">
+                <span>Admin</span>
+            </div>
+            -->
+        </div>
+        <div id="body">
+            <div id="content">
+                <h1>Register</h1>
+                Username: <input id="username" type="text"><br>
+                Password: <input id="password" type="password"><br>
+                <button onclick="onSignUp()">Sign up</button>
+                <script>
+                    async function onSignUp() {
+                        const username = document.getElementById('username').value;
+                        const password = document.getElementById('password').value;
+                        try {
+                            const response = await fetch('/register', {
+                                method: 'POST',
+                                body: JSON.stringify([username, password]),
+                            });
+                            alert(await response.text());
+                        } catch (e) {
+                            alert(`${e.name}: ${e.message}`);
+                            console.log(e);
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </body>
+</html>

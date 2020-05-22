@@ -14,25 +14,38 @@ async function respondWithFile(res, filePath) {
     res.end(file);
 }
 
-async function respondToURL(url, res) {
+async function respond(req, res) {
+    const url = req.url;
     switch (url) {
         case '': case '/': {
-            return await respondWithFile(res, 'index.html');
+            return await respondWithFile(res, 'client/index.html');
         }
         case '/about': {
-            return await respondWithFile(res, 'about.html');
+            return await respondWithFile(res, 'client/about.html');
         }
         case '/blog': {
-            return await respondWithFile(res, 'blog.html');
+            return await respondWithFile(res, 'client/blog.html');
         }
         case '/admin': {
-            return await respondWithFile(res, 'admin.html');
+            return await respondWithFile(res, 'client/admin.html');
         }
         case '/register': {
-            return await respondWithFile(res, 'register.html');
+            if (req.method === 'POST') {
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString();
+                });
+                req.on('end', () => {
+                    const [username, password] = JSON.parse(body);
+                    res.writeHead(200, {'Content-Type': 'text/html'});
+                    res.end('ok');
+                });
+            } else {
+                return await respondWithFile(res, 'client/register.html');
+            }
         }
         case '/style.css': {
-            return await respondWithFile(res, 'style.css');
+            return await respondWithFile(res, 'client/style.css');
         }
         case '/antivirus': {
             res.writeHead(301, {location: `/assets?asset=antivirus.sh`});
@@ -80,7 +93,7 @@ const port = process.env.PORT || 8000;
 
 const server = http.createServer(async (req, res) => {
     try {
-        await respondToURL(req.url, res);
+        await respond(req, res);
     } catch (e) {
         res.writeHead(500, {'Content-Type': 'text/plain'});
         console.log(e);

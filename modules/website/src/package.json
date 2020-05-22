@@ -1,0 +1,13 @@
+{
+  "name": "evilinc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "author": "",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
