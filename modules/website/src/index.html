@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Evil Inc.</title>
+        <meta charset="utf8">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div id="header">
+            <a href="/" class="headerbutton">
+                <span>Home</span>
+            </a>
+            <a href="/about" class="headerbutton">
+                <span>About Us</span>
+            </a>
+            <a href="/blog"  class="headerbutton">
+                <span>Blog</span>
+            </a>
+            <!--
+            <a href="/admin" class="headerbutton">
+                Admin
+            </div>
+            -->
+        </div>
+        <div id="body">
+            <div id="content">
+                Welcome to the website of
+                <h1>Evil Incorporated</h1>
+                We're so evil, <span id="evilthing"><noscript>our website requires JavaScript to function</noscript></span><br>
+                <noscript><i>(seriously, please enable JavaScript)</i><br></noscript>
+                <script>
+                    const evilThings = [
+                        `our website looks like it's from 2005!`,
+                    ];
+                    document.getElementById('evilthing').innerText = evilThings[Math.floor(Math.random() * evilThings.length)];
+                </script><br><br><br><br>
+                Here at Evil Incorporated, we are the world-leading manufacturer for both Evil and Incorporated.<br><br>
+                No matter whether you've had a bad day and want to release your frustration, lost your job and need some money, or looking for a destroyinator to annihilate the entire universe, we've got you covered!<br><br>
+                For any inquiries, please contact us by clicking <a href="https://www.youtube.com/watch?v=ZjNr3nfi5ic">right here</a>. We're waiting for you!
+            </div>
+        </div>
+    </body>
+</html>
