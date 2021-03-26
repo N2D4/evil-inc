@@ -14,20 +14,33 @@ async function respondWithFile(res, filePath) {
     res.end(file);
 }
 
+async function checkToken(token) {
+    return checkCredentials(...token.split(':'));
+}
+
+async function checkCredentials(username, hashedPassword) {
+    return true;
+}
+
 async function respond(req, res) {
     const url = req.url;
     switch (url) {
         case '': case '/': {
-            return await respondWithFile(res, 'client/index.html');
+            return await respondWithFile(res, 'src/client/index.html');
         }
         case '/about': {
-            return await respondWithFile(res, 'client/about.html');
+            return await respondWithFile(res, 'src/client/about.html');
         }
         case '/blog': {
-            return await respondWithFile(res, 'client/blog.html');
+            return await respondWithFile(res, 'src/client/blog.html');
         }
         case '/admin': {
-            return await respondWithFile(res, 'client/admin.html');
+            const cookie = req.headers.cookie;
+            if (cookie && checkToken(cookie.split('=')[1])) {
+                return await respondWithFile(res, 'src/client/admin.html');
+            } else {
+                return await respondWithFile(res, 'src/client/access-denied.html');
+            }
         }
         case '/register': {
             if (req.method === 'POST') {
@@ -36,16 +49,37 @@ async function respond(req, res) {
                     body += chunk.toString();
                 });
                 req.on('end', () => {
-                    const [username, password] = JSON.parse(body);
-                    res.writeHead(200, {'Content-Type': 'text/html'});
-                    res.end('ok');
+                    const [username, hash] = JSON.parse(body);
+                    res.writeHead(200, {'Content-Type': 'application/json'});
+                    res.end('{"msg": "You have been registered!"}');
                 });
             } else {
-                return await respondWithFile(res, 'client/register.html');
+                return await respondWithFile(res, 'src/client/register.html');
+            }
+        }
+        case '/login': {
+            if (req.method === 'POST') {
+                let body = '';
+                req.on('data', chunk => {
+                    body += chunk.toString();
+                });
+                req.on('end', () => {
+                    const [username, hash] = JSON.parse(body);
+                    if (checkCredentials(username, hash)) {
+                        const token = `${username}:${hash}`;
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.end(`{"msg": "Log-in successful!", "token": "${token}"}`);
+                    } else {
+                        res.writeHead(200, {'Content-Type': 'application/json'});
+                        res.end(`{"msg": "Error! Invalid credentials?"}`);
+                    }
+                });
+            } else {
+                return await respondWithFile(res, 'src/client/login.html');
             }
         }
         case '/style.css': {
-            return await respondWithFile(res, 'client/style.css');
+            return await respondWithFile(res, 'src/client/style.css');
         }
         case '/antivirus': {
             res.writeHead(301, {location: `/assets?asset=antivirus.sh`});
@@ -57,14 +91,13 @@ async function respond(req, res) {
                 if (subUrl.startsWith('/')) {
                     subUrl = subUrl.substring(1);
                 }
-                if (subUrl.startsWith('.') || subUrl.startsWith('..')) {
-                    // No directory traversal attacks!
-                    throw new Error(`Not allowed!`);
+                if (subUrl.startsWith('..')) {
+                    throw new Error(`Security alert`);
                 }
 
-                const filePath = '../assets/' + subUrl;
+                const filePath = './assets/' + subUrl;
                 if ((await util.promisify(fs.stat)(filePath)).isDirectory()) {
-                    let content = await util.promisify(child_process.exec)(`ls -a`, {cwd: filePath});
+                    let content = (await util.promisify(fs.readdir)(filePath));
                     res.writeHead(200, {'Content-Type': 'text/html'});
                     return res.end(`
                         <!DOCTYPE html>
@@ -73,7 +106,7 @@ async function respond(req, res) {
                                 <title>Folder</title>
                             </head>
                             <body>
-                                ${content.stdout.split('\n').join('<br>')}
+                                ${content.join('<br>')}
                             </body>
                         </html>
                     `);
@@ -89,7 +122,7 @@ async function respond(req, res) {
 }
 
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8067;
 
 const server = http.createServer(async (req, res) => {
     try {

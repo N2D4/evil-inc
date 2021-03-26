@@ -2,9 +2,9 @@
   "name": "evilinc",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
+  "main": "src/server/server.js",
   "scripts": {
-    "start": "node server/server.js"
+    "start": "NODE_ENV=development node src/server/server.js"
   },
   "author": "",
   "dependencies": {

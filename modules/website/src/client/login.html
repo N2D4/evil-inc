@@ -24,21 +24,25 @@
         </div>
         <div id="body">
             <div id="content">
-                <h1>Register</h1>
+                <h1>Log-in</h1>
                 Username: <input id="username" type="text"><br>
                 Password: <input id="password" type="password"><br>
-                <button onclick="onSignUp()">Sign up</button>
+                <button onclick="onSignUp()">Log-in</button><br>
+                Or <a href="/register">register</a>
                 <script>
                     async function onSignUp() {
                         const username = document.getElementById('username').value;
                         const password = document.getElementById('password').value;
                         const hashedPassword = password;
                         try {
-                            const response = await fetch('/register', {
+                            console.log(username, hashedPassword);
+                            const response = await fetch('/login', {
                                 method: 'POST',
                                 body: JSON.stringify([username, hashedPassword]),
                             });
-                            alert((await response.json()).msg);
+                            const res = await response.json();
+                            if (res.token) document.cookie = `session=${res.token}`;
+                            alert(res.msg);
                         } catch (e) {
                             alert(`${e.name}: ${e.message}`);
                             console.error(e);
