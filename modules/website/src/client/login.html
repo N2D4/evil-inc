@@ -4,6 +4,7 @@
         <title>Evil Inc.</title>
         <meta charset="utf8">
         <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.8.0/sha512.min.js"></script>
     </head>
     <body>
         <div id="header">
@@ -30,21 +31,26 @@
                 <button onclick="onSignUp()">Log-in</button><br>
                 Or <a href="/register">register</a>
                 <script>
+                    async function hash(pw) {
+                        return sha512(pw);
+                    }
+
                     async function onSignUp() {
                         const username = document.getElementById('username').value;
                         const password = document.getElementById('password').value;
-                        const hashedPassword = password;
+                        const hashedPassword = await hash(password);
                         try {
-                            console.log(username, hashedPassword);
                             const response = await fetch('/login', {
                                 method: 'POST',
                                 body: JSON.stringify([username, hashedPassword]),
                             });
-                            const res = await response.json();
-                            if (res.token) document.cookie = `session=${res.token}`;
-                            alert(res.msg);
+                            const r = await response.json();
+                            if (r.error) throw new Error(r.error);
+                            if (r.token) document.cookie = `session=${r.token}`;
+                            alert(r.msg);
+                            if (r.redirect) document.location = r.redirect;
                         } catch (e) {
-                            alert(`${e.name}: ${e.message}`);
+                            alert(`Error while logging in! Check console for details...`);
                             console.error(e);
                         }
                     }

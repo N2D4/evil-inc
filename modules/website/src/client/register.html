@@ -4,6 +4,7 @@
         <title>Evil Inc.</title>
         <meta charset="utf8">
         <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha512/0.8.0/sha512.min.js"></script>
     </head>
     <body>
         <div id="header">
@@ -29,18 +30,25 @@
                 Password: <input id="password" type="password"><br>
                 <button onclick="onSignUp()">Sign up</button>
                 <script>
+                    async function hash(pw) {
+                        return sha512(pw);
+                    }
+
                     async function onSignUp() {
                         const username = document.getElementById('username').value;
                         const password = document.getElementById('password').value;
-                        const hashedPassword = password;
+                        const hashedPassword = await hash(password);
                         try {
                             const response = await fetch('/register', {
                                 method: 'POST',
                                 body: JSON.stringify([username, hashedPassword]),
                             });
-                            alert((await response.json()).msg);
+                            const r = await response.json();
+                            if (r.error) throw new Error(r.error);
+                            alert(r.msg);
+                            if (r.redirect) document.location = r.redirect;
                         } catch (e) {
-                            alert(`${e.name}: ${e.message}`);
+                            alert(`Error while registering! Check console for details...`);
                             console.error(e);
                         }
                     }

@@ -4,10 +4,19 @@
   "description": "",
   "main": "src/server/server.js",
   "scripts": {
-    "start": "NODE_ENV=development node src/server/server.js"
+    "start": "node src/server/server.js",
+    "start-prod": "babel src/server/server.js --presets=@babel/preset-env | uglifyjs -cm -o src/server/server.min.js && node src/server/server.min.js"
   },
   "author": "",
   "dependencies": {
-    "mysql": "^2.18.1"
+    "core-js": "^3.9.1",
+    "regenerator-runtime": "^0.13.7",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "uglify-js": "^3.13.2"
   }
 }
