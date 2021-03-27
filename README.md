@@ -1,6 +1,14 @@
 # evil-inc
 Evil Incorporated is the world-leading manufacturer for both Evil and Incorporated.
 
+## Set-Up
+Start by running the Docker image using the following command:
+```sh
+cd evil-inc
+docker build -t evil-inc . && docker run -p 8067:8067 evil-inc
+```
+Then, navigate to `https://localhost:8067`.
+
 ## The Solution
 - Open website
 - Open Blog page, see a post by Norm promoting password reuse, and Vanessa mentioning she's the webmaster on a post about SQL injection (expert mode: no explicit mentions of SQL injection)
