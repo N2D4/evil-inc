@@ -5,7 +5,7 @@ Evil Incorporated is the world-leading manufacturer for both Evil and Incorporat
 Start by running the Docker image using the following command:
 ```sh
 cd evil-inc
-docker build -t evil-inc . && docker run -p 8067:8067 evil-inc
+docker build -t evil-inc . && docker run -p 8067:8067 -p 25565:25565 evil-inc
 ```
 Then, navigate to `https://localhost:8067`.
 
@@ -30,4 +30,5 @@ Then, navigate to `https://localhost:8067`.
 - Use `eval` to open a shell and log-in to the user `norm` using Norm's password found in the database (he used the same one)
 - Find that Norm has a Minecraft Spigot server running, and a text file tutorial on how to set up a Spigot server advocating running the server as `root` and mentioning not to install "untrusted plug-ins" as they could be malicious
   - Create a Spigot plug-in to remotely open a shell and install it on the server using Norm's account
+  - Notice you need to restart the server first, which you can do by logging into the server as an OP from ops.json (as it is set to offline mode)
 - The file at `/home/heinz/SECRET_FLAG.txt` says `CURSE YOU, PERRY THE PLATYPUS!` - that's the flag!
