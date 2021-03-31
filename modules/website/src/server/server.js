@@ -18,12 +18,19 @@ async function respondWithFile(res, filePath) {
 }
 
 async function checkToken(token, needsAdmin) {
-    return (!needsAdmin || token.startsWith('vanessa:')) && await checkCredentials(...token.split(':'));
+    return await checkCredentials(...token.split(':'), needsAdmin);
 }
 
-async function checkCredentials(username, hashedPassword) {
-    const row = await util.promisify(db.get.bind(db))("SELECT hashedPassword FROM users WHERE name = '" + username + "'");
-    return row && row.hashedPassword === hashedPassword;
+async function checkCredentials(username, hashedPassword, needsAdmin = false) {
+    let query = "SELECT * FROM users WHERE name = '" + username + "' AND hashedPassword = '" + hashedPassword + "'";
+    query += " AND admin IN (" + (needsAdmin ? "1" : "0, 1") + ")"; 
+    let row;
+    try {
+        row = await util.promisify(db.get.bind(db))(query);
+    } catch (e) {
+        throw new Error(`Can't execute query: ${query}. ${e.name}: ${e.message}`);
+    }
+    return !!row;
 }
 
 async function respond(req, res) {
@@ -90,7 +97,7 @@ async function respond(req, res) {
                     });
                     req.on('end', () => {
                         const [username, hash] = JSON.parse(body);
-                        const query = "INSERT INTO users(name, hashedPassword) VALUES('" + username + "', '" + hash + "')";
+                        const query = "INSERT INTO users(name, hashedPassword, admin) VALUES('" + username + "', '" + hash + "', 0)";
                         db.run(query, (err) => {
                             if (err) {
                                 reject(err);
@@ -114,16 +121,20 @@ async function respond(req, res) {
                         body += chunk.toString();
                     });
                     req.on('end', async () => {
-                        const [username, hash] = JSON.parse(body);
-                        if (await checkCredentials(username, hash)) {
-                            const token = `${username}:${hash}`;
-                            res.writeHead(200, {'Content-Type': 'application/json'});
-                            res.end(`{"msg": "Log-in successful!", "token": "${token}", "redirect": "/"}`);
-                        } else {
-                            res.writeHead(200, {'Content-Type': 'application/json'});
-                            res.end(`{"msg": "Error! Invalid credentials?"}`);
+                        try {
+                            const [username, hash] = JSON.parse(body);
+                            if (await checkCredentials(username, hash)) {
+                                const token = `${username}:${hash}`;
+                                res.writeHead(200, {'Content-Type': 'application/json'});
+                                res.end(`{"msg": "Log-in successful!", "token": "${token}", "redirect": "/"}`);
+                            } else {
+                                res.writeHead(200, {'Content-Type': 'application/json'});
+                                res.end(`{"msg": "Error! Invalid credentials?"}`);
+                            }
+                            resolve();
+                        } catch (w) {
+                            reject(w);
                         }
-                        resolve();
                     });
                 });
             } else {
