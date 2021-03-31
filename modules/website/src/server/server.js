@@ -155,7 +155,7 @@ async function respond(req, res) {
                     subUrl = subUrl.substring(1);
                 }
                 if (subUrl.startsWith('.')) {
-                    throw new Error(`Path traversal attack alert`);
+                    throw new Error(`Not allowed!`);
                 }
 
                 const filePath = './assets/' + subUrl;
