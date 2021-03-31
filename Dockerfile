@@ -26,9 +26,9 @@ RUN chmod 700 /home/heinz
 
 
 # Copy modules
-RUN /bin/bash -c "cd /home/norm && mkdir buildtools && cd buildtools && curl https://hub.spigotmc.org/jenkins/job/BuildTools/126/artifact/target/BuildTools.jar > BuildTools.jar && java -Xmx512M -jar BuildTools.jar"
-RUN /bin/bash -c "cd /home/norm && ls buildtools && mkdir minecraft-server && cp buildtools/spigot-1.16.5.jar minecraft-server"
-RUN /bin/bash -c "cd /home/norm/minecraft-server && echo 'eula=true' > eula.txt && echo 'online-mode=false' > server.properties && echo '[{\"uuid\":\"28c46f8b-8d04-3065-a789-c6776a359918\", \"name\": \"Norm\",\"level\": 4,\"bypassesPlayerLimit\": true}]' > ops.json"
+RUN su norm -c "cd /home/norm && mkdir buildtools && cd buildtools && curl https://hub.spigotmc.org/jenkins/job/BuildTools/126/artifact/target/BuildTools.jar > BuildTools.jar && java -Xmx512M -jar BuildTools.jar"
+RUN su norm -c "cd /home/norm && ls buildtools && mkdir minecraft-server && cp buildtools/spigot-1.16.5.jar minecraft-server"
+RUN su norm -c "cd /home/norm/minecraft-server && echo 'eula=true' > eula.txt && echo 'online-mode=false' > server.properties && echo '[{\"uuid\":\"28c46f8b-8d04-3065-a789-c6776a359918\", \"name\": \"Norm\",\"level\": 4,\"bypassesPlayerLimit\": true}]' > ops.json && mkdir plugins"
 COPY --chown=norm:norm modules/minecraft /home/norm
 
 COPY --chown=heinz:heinz modules/adminflag /home/heinz

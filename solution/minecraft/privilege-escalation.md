@@ -1,0 +1,1 @@
+Compile and move the plugin from the `privesc-plugin` folder in this repository into `/home/norm/minecraft-server/plugins` on Evil Inc.'s server using the Discord bot `quikmafs` command, then restart the server. The flag will be broadcasted in the game chat whenever the plugin is reloaded.
