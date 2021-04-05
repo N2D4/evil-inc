@@ -14,12 +14,13 @@ with open('config.txt', 'r') as configfile:
 configDelim = "\n========\n"
 quotes = config.split(configDelim)[0].splitlines()
 token = config.split(configDelim)[1]
-adminid = int(config.split(configDelim)[2])
-markovid = int(config.split(configDelim)[3])
+invite_link = config.split(configDelim)[2]
+adminid = int(config.split(configDelim)[3])
+markovid = int(config.split(configDelim)[4])
 markov.set_follow_id(markovid)
 def save_config():
     with open('config.txt', 'w') as configfile:
-        configfile.write(configDelim.join(["\n".join(quotes), token, str(adminid), str(markovid)]))
+        configfile.write(configDelim.join(["\n".join(quotes), token, invite_link, str(adminid), str(markovid)]))
 
 tellme = ""
 maxmsglen = 2000
@@ -196,7 +197,7 @@ async def on_message(message: discord.Message):
             await message.channel.send("!sleep done")
 
         elif message.content == "!inviteme":
-            await message.channel.send("Invite me to your server: https://discord.com/api/oauth2/authorize?client_id=828567114007969853&permissions=2048&scope=bot")
+            await message.channel.send("Invite me to your server: " + invite_link)
             
         elif len(message.content) > 5 and message.content[0] == message.content[2] and message.content[0:3].islower() and message.content[3:5] == " x":
             print("lol-ing")
