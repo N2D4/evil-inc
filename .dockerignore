@@ -2,3 +2,4 @@
 **/.localized
 **/node_modules/
 **/__pycache__/
+**/.git/

@@ -27,7 +27,7 @@ Then, navigate to `https://localhost:8067`.
   - Config file is also used to store quotes by the `!quote` command, which doesn't properly escape quotes so it can be used to overwrite the admins with any other list of Discord users
 - Use the shitty hash algorithm to figure that Norm's password in the web database is fairly short, short enough to be brute-forced (expert mode: it's an SHA256 hash with substitution cipher this time, crack the substitution cipher and use a rainbow table)
 - Use `eval` to open a shell and log-in to the user `norm` using Norm's password found in the database (he used the same one)
-- Find that Norm has a Minecraft Spigot server running, and a text file tutorial on how to set up a Spigot server advocating running the server as `root` and mentioning not to install "untrusted plug-ins" as they could be malicious
+- Find that Norm has a Minecraft Spigot server running, and a text file tutorial on how to set up a Spigot server advocating running the server as `root`
   - Create a Spigot plug-in to remotely open a shell and install it on the server using Norm's account
   - Notice you need to restart the server first, which you can do by logging into the server as an OP from ops.json (as it is set to offline mode, you can choose any username with a cracked launcher)
 - The file at `/home/heinz/SECRET_FLAG.txt` says `CURSE YOU, PERRY THE PLATYPUS!` - that's the flag!
