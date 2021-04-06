@@ -147,6 +147,9 @@ async def on_message(message: discord.Message):
         
         elif message.content.startswith("!quote "):
             quotes.append(message.content[7:].replace(configDelim, ""))
+            while len(quotes) > 10:
+                await message.channel.send("Deleting an old quote because there's too many!")
+                quotes.pop(0)
             save_config()
             await message.channel.send("Quote saved!")
 
