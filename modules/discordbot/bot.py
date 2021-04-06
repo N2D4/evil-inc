@@ -176,7 +176,7 @@ async def on_message(message: discord.Message):
                 await message.channel.send("Argument may not exceed 10!")
             else:
                 gen = ""
-                while True:
+                for i in range(100):
                     gen = markov.markov_generate()
                     if len(gen.split()) >= num:
                         break
